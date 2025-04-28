@@ -1,0 +1,136 @@
+	EXPORT __main
+	AREA PROG_1, CODE, READONLY 
+__main 
+	;Main program flow — call each subroutine in sequence
+	BL find_min_A
+    BL find_min_B
+    BL convert_B_10s_complement
+    BL add_sub_lists
+
+stop
+    B stop
+
+;================= Subroutines ===================
+
+find_min_A
+    LDR R0, =A				;load A into R0
+    MOV R1, #5				;R1 = size of A
+    LDR R2, [R0], #4		;load the first number of A
+    MOV R3, R2              ; R3 = current minimum A
+
+find_min_A_loop
+    SUBS R1, R1, #1			;subtract 1 from R1(size of element)
+    BEQ store_min_A			;if R1 is 0 end loop
+    LDR R2, [R0], #4		;load next element from list to R2
+    CMP R2, R3				;Compare R2 and R3
+    MOVLT R3, R2			;if R2 less than R3 then move R2 into R3
+    B find_min_A_loop
+
+store_min_A
+    LDR R0, =MinA			; Load the address of MinA into R0
+    STR R3, [R0]			; Store the value of R3 (min A) into the memory pointed to by R0
+    BX LR					; Return from subroutine
+
+find_min_B
+    LDR R0, =B
+    MOV R1, #5
+    LDR R2, [R0], #4
+    MOV R4, R2              ; R4 = minB
+
+find_min_B_loop
+    SUBS R1, R1, #1
+    BEQ store_min_B
+    LDR R2, [R0], #4
+    CMP R2, R4
+    MOVLT R4, R2
+    B find_min_B_loop
+
+store_min_B
+    LDR R0, =MinB
+    STR R4, [R0]
+
+    ; Sum MinA + 150
+    LDR R1, =MinA
+    LDR R2, [R1]
+    ADD R2, R2, #150
+    LDR R1, =SumMinA
+    STR R2, [R1]
+
+    ; Sum MinB + 150
+    ADD R3, R4, #150
+    LDR R1, =SumMinB
+    STR R3, [R1]
+
+    BX LR
+
+convert_B_10s_complement
+    LDR R0, =B			; Load address of B
+    LDR R1, =CompB		; Load address to store results
+    MOV R2, #5			; Number of elements
+	
+convert_loop
+    LDR R3, [R0], #4	; Load B element into R3
+    CMP R3, #0			; compare R3
+    BGE store_positive	; If positive, store directly
+
+    ; 10's complement: (2^32) - |num|
+    RSBS R4, R3, #0      ; R4 = -R3
+    MVN  R5, R4          ; 1's complement
+    ADD  R5, R5, #1      ; +1 ? 2's complement (10's complement)
+    STR  R5, [R1], #4	; Store result
+    B next_convert
+
+store_positive
+    STR R3, [R1], #4	; Store as is if positive
+
+next_convert
+    SUBS R2, R2, #1
+    BNE convert_loop
+
+    BX LR
+
+add_sub_lists
+    LDR R0, =A
+    LDR R1, =CompB
+    LDR R2, =SumAB
+    LDR R3, =DiffAB
+    LDR R4, =CarryAB
+    MOV R5, #5
+
+add_sub_loop
+    LDR R6, [R0], #4
+    LDR R7, [R1], #4
+
+    ; Addition with carry detection
+    ADDS R8, R6, R7
+    STR R8, [R2], #4
+
+    ; Store carry (C flag in APSR)
+    MOV R9, #0
+    ADC R9, R9, #0    ; if carry, R9 = 1
+    STR R9, [R4], #4
+
+    ; Subtraction
+    SUB R8, R6, R7
+    STR R8, [R3], #4
+
+    SUBS R5, R5, #1
+    BNE add_sub_loop
+
+    BX LR
+
+;================= Data Section ===================
+
+    AREA Data1, DATA, READWRITE
+A       DCD 3521, 379, 5611, 919, 1318
+B       DCD 8141, 2615, -53, 951, -217
+CompB   DCD 0, 0, 0, 0, 0
+SumAB   DCD 0, 0, 0, 0, 0
+DiffAB  DCD 0, 0, 0, 0, 0
+CarryAB DCD 0, 0, 0, 0, 0
+MinA    DCD 0
+MinB    DCD 0
+SumMinA DCD 0
+SumMinB DCD 0
+
+    END
