@@ -1,10 +1,10 @@
 	EXPORT __main
-	AREA PROG_1, CODE, READONLY 
+    AREA PROG_1, CODE, READONLY 
 __main 
-	;Main program flow — call each subroutine in sequence
-	BL find_min_A
+    ; Main program flow — call each subroutine in sequence
+    BL find_min_A
     BL find_min_B
-    BL convert_B_10s_complement
+    BL convert_B_neg_assumed_10s_complement
     BL add_sub_lists
 
 stop
@@ -13,29 +13,29 @@ stop
 ;================= Subroutines ===================
 
 find_min_A
-    LDR R0, =A				;load A into R0
-    MOV R1, #5				;R1 = size of A
-    LDR R2, [R0], #4		;load the first number of A
-    MOV R3, R2              ; R3 = current minimum A
+    LDR R0, =A
+    MOV R1, #5
+    LDR R2, [R0], #4
+    MOV R3, R2
 
 find_min_A_loop
-    SUBS R1, R1, #1			;subtract 1 from R1(size of element)
-    BEQ store_min_A			;if R1 is 0 end loop
-    LDR R2, [R0], #4		;load next element from list to R2
-    CMP R2, R3				;Compare R2 and R3
-    MOVLT R3, R2			;if R2 less than R3 then move R2 into R3
+    SUBS R1, R1, #1
+    BEQ store_min_A
+    LDR R2, [R0], #4
+    CMP R2, R3
+    MOVLT R3, R2
     B find_min_A_loop
 
 store_min_A
-    LDR R0, =MinA			; Load the address of MinA into R0
-    STR R3, [R0]			; Store the value of R3 (min A) into the memory pointed to by R0
-    BX LR					; Return from subroutine
+    LDR R0, =MinA
+    STR R3, [R0]
+    BX LR
 
 find_min_B
-    LDR R0, =B
+    LDR R0, =B     ; Now using B_neg_assumed instead of B
     MOV R1, #5
     LDR R2, [R0], #4
-    MOV R4, R2              ; R4 = minB
+    MOV R4, R2
 
 find_min_B_loop
     SUBS R1, R1, #1
@@ -63,25 +63,25 @@ store_min_B
 
     BX LR
 
-convert_B_10s_complement
-    LDR R0, =B			; Load address of B
-    LDR R1, =CompB		; Load address to store results
-    MOV R2, #5			; Number of elements
-	
-convert_loop
-    LDR R3, [R0], #4	; Load B element into R3
-    CMP R3, #0			; compare R3
-    BGE store_positive	; If positive, store directly
+convert_B_neg_assumed_10s_complement
+    LDR R0, =B_neg_assumed     ; Use assumed negative list
+    LDR R1, =CompB
+    MOV R2, #5
 
-    ; 10's complement: (2^32) - |num|
-    RSBS R4, R3, #0      ; R4 = -R3
-    MVN  R5, R4          ; 1's complement
-    ADD  R5, R5, #1      ; +1 ? 2's complement (10's complement)
-    STR  R5, [R1], #4	; Store result
+convert_loop
+    LDR R3, [R0], #4
+    CMP R3, #0
+    BGE store_positive
+
+    ; 10's complement for negative number
+    RSBS R4, R3, #0
+    MVN  R5, R4
+    ADD  R5, R5, #1
+    STR  R5, [R1], #4
     B next_convert
 
 store_positive
-    STR R3, [R1], #4	; Store as is if positive
+    STR R3, [R1], #4
 
 next_convert
     SUBS R2, R2, #1
@@ -101,16 +101,13 @@ add_sub_loop
     LDR R6, [R0], #4
     LDR R7, [R1], #4
 
-    ; Addition with carry detection
     ADDS R8, R6, R7
     STR R8, [R2], #4
 
-    ; Store carry (C flag in APSR)
     MOV R9, #0
-    ADC R9, R9, #0    ; if carry, R9 = 1
+    ADC R9, R9, #0
     STR R9, [R4], #4
 
-    ; Subtraction
     SUB R8, R6, R7
     STR R8, [R3], #4
 
@@ -122,15 +119,16 @@ add_sub_loop
 ;================= Data Section ===================
 
     AREA Data1, DATA, READWRITE
-A       DCD 3521, 379, 5611, 919, 1318
-B       DCD 8141, 2615, -53, 951, -217
-CompB   DCD 0, 0, 0, 0, 0
-SumAB   DCD 0, 0, 0, 0, 0
-DiffAB  DCD 0, 0, 0, 0, 0
-CarryAB DCD 0, 0, 0, 0, 0
-MinA    DCD 0
-MinB    DCD 0
-SumMinA DCD 0
-SumMinB DCD 0
+A               DCD 3521, 379, 5611, 919, 1318
+B               DCD 8141, 2615, 53, 951, 217
+B_neg_assumed   DCD 8141, 2615, -53, 951, -217    ; <- Negative versions used in logic
+CompB           DCD 0, 0, 0, 0, 0
+SumAB           DCD 0, 0, 0, 0, 0
+DiffAB          DCD 0, 0, 0, 0, 0
+CarryAB         DCD 0, 0, 0, 0, 0
+MinA            DCD 0
+MinB            DCD 0
+SumMinA         DCD 0
+SumMinB         DCD 0
 
     END
