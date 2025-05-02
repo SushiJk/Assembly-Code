@@ -54,22 +54,24 @@ Image Symbol Table
     .text                                    0x080001c8   Section        0  heapauxi.o(.text)
     [Anonymous Symbol]                       0x080001d0   Section        0  system_stm32f4xx.o(.text.SystemInit)
     $v0                                      0x080001e4   Number         0  asm.o(PROG_1)
-    PROG_1                                   0x080001e4   Section      252  asm.o(PROG_1)
+    PROG_1                                   0x080001e4   Section      260  asm.o(PROG_1)
     A                                        0x20000000   Data          20  asm.o(Data1)
-    Data1                                    0x20000000   Section      132  asm.o(Data1)
+    Data1                                    0x20000000   Section      156  asm.o(Data1)
     B                                        0x20000014   Data          20  asm.o(Data1)
-    CompB                                    0x20000028   Data          20  asm.o(Data1)
-    SumAB                                    0x2000003c   Data          20  asm.o(Data1)
-    DiffAB                                   0x20000050   Data          20  asm.o(Data1)
-    CarryAB                                  0x20000064   Data          20  asm.o(Data1)
-    MinA                                     0x20000078   Data           4  asm.o(Data1)
-    MinB                                     0x2000007c   Data           4  asm.o(Data1)
-    SumMinAB                                 0x20000080   Data           4  asm.o(Data1)
-    Heap_Mem                                 0x20000088   Data         512  startup_stm32f407xx.o(HEAP)
-    HEAP                                     0x20000088   Section      512  startup_stm32f407xx.o(HEAP)
-    Stack_Mem                                0x20000288   Data        1024  startup_stm32f407xx.o(STACK)
-    STACK                                    0x20000288   Section     1024  startup_stm32f407xx.o(STACK)
-    __initial_sp                             0x20000688   Data           0  startup_stm32f407xx.o(STACK)
+    B_neg_assumed                            0x20000028   Data          20  asm.o(Data1)
+    CompB                                    0x2000003c   Data          20  asm.o(Data1)
+    SumAB                                    0x20000050   Data          20  asm.o(Data1)
+    DiffAB                                   0x20000064   Data          20  asm.o(Data1)
+    CarryAB                                  0x20000078   Data          20  asm.o(Data1)
+    MinA                                     0x2000008c   Data           4  asm.o(Data1)
+    MinB                                     0x20000090   Data           4  asm.o(Data1)
+    SumMinA                                  0x20000094   Data           4  asm.o(Data1)
+    SumMinB                                  0x20000098   Data           4  asm.o(Data1)
+    Heap_Mem                                 0x200000a0   Data         512  startup_stm32f407xx.o(HEAP)
+    HEAP                                     0x200000a0   Section      512  startup_stm32f407xx.o(HEAP)
+    Stack_Mem                                0x200002a0   Data        1024  startup_stm32f407xx.o(STACK)
+    STACK                                    0x200002a0   Section     1024  startup_stm32f407xx.o(STACK)
+    __initial_sp                             0x200006a0   Data           0  startup_stm32f407xx.o(STACK)
 
     Global Symbols
 
@@ -185,9 +187,9 @@ Memory Map of the image
 
   Image Entry point : 0x08000189
 
-  Load Region LR_1 (Base: 0x08000000, Size: 0x000002e0, Max: 0xffffffff, ABSOLUTE)
+  Load Region LR_1 (Base: 0x08000000, Size: 0x000002e8, Max: 0xffffffff, ABSOLUTE)
 
-    Execution Region ER_RO (Exec base: 0x08000000, Load base: 0x08000000, Size: 0x000002e0, Max: 0xffffffff, ABSOLUTE)
+    Execution Region ER_RO (Exec base: 0x08000000, Load base: 0x08000000, Size: 0x000002e8, Max: 0xffffffff, ABSOLUTE)
 
     Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
 
@@ -197,25 +199,25 @@ Memory Map of the image
     0x080001ce   0x080001ce   0x00000002   PAD
     0x080001d0   0x080001d0   0x00000012   Code   RO           15    .text.SystemInit    system_stm32f4xx.o
     0x080001e2   0x080001e2   0x00000002   PAD
-    0x080001e4   0x080001e4   0x000000fc   Code   RO            1    PROG_1              asm.o
+    0x080001e4   0x080001e4   0x00000104   Code   RO            1    PROG_1              asm.o
 
 
 
-  Load Region LR_2 (Base: 0x20000000, Size: 0x00000084, Max: 0xffffffff, ABSOLUTE)
+  Load Region LR_2 (Base: 0x20000000, Size: 0x0000009c, Max: 0xffffffff, ABSOLUTE)
 
-    Execution Region ER_RW (Exec base: 0x20000000, Load base: 0x20000000, Size: 0x00000084, Max: 0xffffffff, ABSOLUTE)
-
-    Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
-
-    0x20000000   0x20000000   0x00000084   Data   RW            2    Data1               asm.o
-
-
-    Execution Region ER_ZI (Exec base: 0x20000088, Load base: 0x20000084, Size: 0x00000600, Max: 0xffffffff, ABSOLUTE)
+    Execution Region ER_RW (Exec base: 0x20000000, Load base: 0x20000000, Size: 0x0000009c, Max: 0xffffffff, ABSOLUTE)
 
     Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
 
-    0x20000088        -       0x00000200   Zero   RW            8    HEAP                startup_stm32f407xx.o
-    0x20000288        -       0x00000400   Zero   RW            7    STACK               startup_stm32f407xx.o
+    0x20000000   0x20000000   0x0000009c   Data   RW            2    Data1               asm.o
+
+
+    Execution Region ER_ZI (Exec base: 0x200000a0, Load base: 0x2000009c, Size: 0x00000600, Max: 0xffffffff, ABSOLUTE)
+
+    Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
+
+    0x200000a0        -       0x00000200   Zero   RW            8    HEAP                startup_stm32f407xx.o
+    0x200002a0        -       0x00000400   Zero   RW            7    STACK               startup_stm32f407xx.o
 
 
 ==============================================================================
@@ -225,12 +227,12 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   Object Name
 
-       252         52          0        132          0        312   asm.o
+       260         56          0        156          0        336   asm.o
         64         26        392          0       1536        876   startup_stm32f407xx.o
         18          0          0          0          0       2778   system_stm32f4xx.o
 
     ----------------------------------------------------------------------
-       336         78        392        132       1536       3966   Object Totals
+       344         82        392        156       1536       3990   Object Totals
          0          0          0          0          0          0   (incl. Generated)
          2          0          0          0          0          0   (incl. Padding)
 
@@ -260,15 +262,15 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-       344         78        392        132       1536       4118   Grand Totals
-       344         78        392        132       1536       4118   ELF Image Totals
-       344         78        392        132          0          0   ROM Totals
+       352         82        392        156       1536       4142   Grand Totals
+       352         82        392        156       1536       4142   ELF Image Totals
+       352         82        392        156          0          0   ROM Totals
 
 ==============================================================================
 
-    Total RO  Size (Code + RO Data)                  736 (   0.72kB)
-    Total RW  Size (RW Data + ZI Data)              1668 (   1.63kB)
-    Total ROM Size (Code + RO Data + RW Data)        868 (   0.85kB)
+    Total RO  Size (Code + RO Data)                  744 (   0.73kB)
+    Total RW  Size (RW Data + ZI Data)              1692 (   1.65kB)
+    Total ROM Size (Code + RO Data + RW Data)        900 (   0.88kB)
 
 ==============================================================================
 
