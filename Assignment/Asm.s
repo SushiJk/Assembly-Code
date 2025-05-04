@@ -1,14 +1,13 @@
 	EXPORT __main
     AREA PROG_1, CODE, READONLY 
 __main 
-    ; Main program flow — call each subroutine in sequence
+    ; Main program flow ï¿½ call each subroutine in sequence
     BL find_min_A		 			; Call subroutine to find minimum value in array A
     BL find_min_B       			; Call subroutine to find minimum value in array B
     BL convert_B_10s_complement 	; Convert negative values in B to 10's complement
     BL add_sub_lists				; Add and subtract elements from A and CompB
 	
-stop
-    B stop
+stop B stop
 
 ;================= Subroutines ===================
 
@@ -25,6 +24,7 @@ find_min_A_loop
     CMP R2, R3                 	; Compare with current minimum
     MOVLT R3, R2               	; If R2 < R3, update minimum
     B find_min_A_loop          	; Repeat loop
+
 
 store_min_A
     LDR R0, =MinA              	; Load address of MinA variable
@@ -64,31 +64,30 @@ store_min_B
     BX LR                      	; Return from subroutine
 
 convert_B_10s_complement
-    LDR R0, = B     			;Load address of B
-    LDR R1, =CompB				;Load address of CompB
-    MOV R2, #5					;Set loop counter to 5
+    LDR     R0, =B              ; R0 -> base address of B
+    LDR     R1, =CompB          ; R1 -> base address of CompB
+    MOV     R2, #5              ; R2 = loop counter (5 elements)
+    LDR     R10, =10000         ; R10 = constant 10000
 
 convert_loop
-    LDR R3, [R0], #4			;Load value from B
-    CMP R3, #0					;Check if value is negative 
-    BGE store_positive			;if positive go to store_positive
-	
-    ; 10's complement for negative number
-    RSBS R4, R3, #0				;R4 = -R3
-    MVN  R5, R4					;inverse bits of R4 and store in R5
-    ADD  R5, R5, #1				;add 1 to R5
-    STR  R5, [R1], #4			;Store converted value to R1
-    B next_convert				;next iteration
+    LDR     R3, [R0], #4        ; Load next value from B into R3 and post-increment R0
+    CMP     R3, #0              ; Check if R3 is non-negative
+    BGE     store_positive      ; If R3 >= 0, store it directly
+
+    ; Negative number: compute 10's complement
+    RSBS    R4, R3, #0          ; R4 = -R3 = absolute value of R3
+    RSB     R5, R4, R10         ; R5 = 10000 - abs(R3)
+    STR     R5, [R1], #4        ; Store result and increment R1
+    B       next_convert
 
 store_positive
-    STR R3, [R1], #4			;store positive number directly
+    STR     R3, [R1], #4   D     ; Store positive number directly
 
 next_convert
-    SUBS R2, R2, #1            ; Decrement counter
-    BNE convert_loop           ; If not zero, continue loop
-
-    BX LR                      ; Return from subroutine
-
+    SUBS    R2, R2, #1          ; Decrement loop counter
+    BNE     convert_loop        ; If R2 != 0, repeat loop
+    BX      LR                  ; Return from subroutine                                     
+	
 add_sub_lists
     LDR R0, =A                 ; Load address of array A
     LDR R1, =CompB             ; Load address of converted B
