@@ -7,7 +7,7 @@ __main
     BL convert_B_10s_complement 	; Convert negative values in B to 10's complement
     BL add_sub_lists				; Add and subtract elements from A and CompB
 	
-stop B stop
+END	B END
 
 ;================= Subroutines ===================
 
@@ -67,21 +67,13 @@ convert_B_10s_complement
     LDR     R0, =B              ; R0 -> base address of B
     LDR     R1, =CompB          ; R1 -> base address of CompB
     MOV     R2, #5              ; R2 = loop counter (5 elements)
-    LDR     R10, =10000         ; R10 = constant 10000
+	LDR		R5, =100000			; 10 complement using 5 digit
 
 convert_loop
     LDR     R3, [R0], #4        ; Load next value from B into R3 and post-increment R0
-    CMP     R3, #0              ; Check if R3 is non-negative
-    BGE     store_positive      ; If R3 >= 0, store it directly
-
-    ; Negative number: compute 10's complement
-    RSBS    R4, R3, #0          ; R4 = -R3 = absolute value of R3
-    RSB     R5, R4, R10         ; R5 = 10000 - abs(R3)
-    STR     R5, [R1], #4        ; Store result and increment R1
+    SUB		R4, R5, R3			; R5 = 100000 - R3
+    STR     R4, [R1], #4        ; Store result and increment R1
     B       next_convert
-
-store_positive
-    STR     R3, [R1], #4   D     ; Store positive number directly
 
 next_convert
     SUBS    R2, R2, #1          ; Decrement loop counter
@@ -90,7 +82,8 @@ next_convert
 	
 add_sub_lists
     LDR R0, =A                 ; Load address of array A
-    LDR R1, =CompB             ; Load address of converted B
+	LDR R1, =B				   ; Load address of array B
+    LDR R10, =CompB            ; Load address of complement array B
     LDR R2, =SumAB             ; Load address to store sums
     LDR R3, =DiffAB            ; Load address to store differences
     LDR R4, =CarryAB           ; Load address to store carry info
@@ -98,7 +91,7 @@ add_sub_lists
 
 add_sub_loop
     LDR R6, [R0], #4           ; Load value from A
-    LDR R7, [R1], #4           ; Load value from CompB
+    LDR R7, [R1], #4           ; Load value from B
 
     ADDS R8, R6, R7            ; Add with carry update
     STR R8, [R2], #4           ; Store sum in SumAB
@@ -107,6 +100,7 @@ add_sub_loop
     ADC R9, R9, #0             ; Add carry flag to R9
     STR R9, [R4], #4           ; Store carry in CarryAB
 
+	LDR R7, [R10], #4		   ; Load value from compB
     SUB R8, R6, R7             ; Subtract CompB from A
     STR R8, [R3], #4           ; Store result in DiffAB
 
