@@ -54,7 +54,7 @@ Image Symbol Table
     .text                                    0x080001c8   Section        0  heapauxi.o(.text)
     [Anonymous Symbol]                       0x080001d0   Section        0  system_stm32f4xx.o(.text.SystemInit)
     $v0                                      0x080001e4   Number         0  asm.o(PROG_1)
-    PROG_1                                   0x080001e4   Section      260  asm.o(PROG_1)
+    PROG_1                                   0x080001e4   Section      264  asm.o(PROG_1)
     A                                        0x20000000   Data          20  asm.o(Data1)
     Data1                                    0x20000000   Section      136  asm.o(Data1)
     B                                        0x20000014   Data          20  asm.o(Data1)
@@ -186,9 +186,9 @@ Memory Map of the image
 
   Image Entry point : 0x08000189
 
-  Load Region LR_1 (Base: 0x08000000, Size: 0x000002e8, Max: 0xffffffff, ABSOLUTE)
+  Load Region LR_1 (Base: 0x08000000, Size: 0x000002ec, Max: 0xffffffff, ABSOLUTE)
 
-    Execution Region ER_RO (Exec base: 0x08000000, Load base: 0x08000000, Size: 0x000002e8, Max: 0xffffffff, ABSOLUTE)
+    Execution Region ER_RO (Exec base: 0x08000000, Load base: 0x08000000, Size: 0x000002ec, Max: 0xffffffff, ABSOLUTE)
 
     Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
 
@@ -198,7 +198,7 @@ Memory Map of the image
     0x080001ce   0x080001ce   0x00000002   PAD
     0x080001d0   0x080001d0   0x00000012   Code   RO           15    .text.SystemInit    system_stm32f4xx.o
     0x080001e2   0x080001e2   0x00000002   PAD
-    0x080001e4   0x080001e4   0x00000104   Code   RO            1    PROG_1              asm.o
+    0x080001e4   0x080001e4   0x00000108   Code   RO            1    PROG_1              asm.o
 
 
 
@@ -226,12 +226,12 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   Object Name
 
-       260         56          0        136          0        336   asm.o
-        64         26        392          0       1536        892   startup_stm32f407xx.o
-        18          0          0          0          0       2796   system_stm32f4xx.o
+       264         64          0        136          0        308   asm.o
+        64         26        392          0       1536        868   startup_stm32f407xx.o
+        18          0          0          0          0       2786   system_stm32f4xx.o
 
     ----------------------------------------------------------------------
-       344         82        392        136       1536       4024   Object Totals
+       348         90        392        136       1536       3962   Object Totals
          0          0          0          0          0          0   (incl. Generated)
          2          0          0          0          0          0   (incl. Padding)
 
@@ -261,15 +261,15 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-       352         82        392        136       1536       4176   Grand Totals
-       352         82        392        136       1536       4176   ELF Image Totals
-       352         82        392        136          0          0   ROM Totals
+       356         90        392        136       1536       4114   Grand Totals
+       356         90        392        136       1536       4114   ELF Image Totals
+       356         90        392        136          0          0   ROM Totals
 
 ==============================================================================
 
-    Total RO  Size (Code + RO Data)                  744 (   0.73kB)
+    Total RO  Size (Code + RO Data)                  748 (   0.73kB)
     Total RW  Size (RW Data + ZI Data)              1672 (   1.63kB)
-    Total ROM Size (Code + RO Data + RW Data)        880 (   0.86kB)
+    Total ROM Size (Code + RO Data + RW Data)        884 (   0.86kB)
 
 ==============================================================================
 
