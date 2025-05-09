@@ -90,24 +90,24 @@ add_sub_lists
     MOV R5, #5                 ; Set loop counter
 
 add_sub_loop
-    LDR R6, [R0], #4           ; Load value from A
-    LDR R7, [R1], #4           ; Load value from B
+    LDR R6, [R0], #4           	; Load value from A
+    LDR R7, [R1], #4           	; Load value from B
 
-    ADDS R8, R6, R7            ; Add with carry update
-    STR R8, [R2], #4           ; Store sum in SumAB
+    ADDS R8, R6, R7            	; Add with carry update
+    STR R8, [R2], #4           	; Store sum in SumAB
 
-    MOV R9, #0                 ; Clear R9 for carry
-    ADC R9, R9, #0             ; Add carry flag to R9
-    STR R9, [R4], #4           ; Store carry in CarryAB
+	LDR R7, [R10], #4       	; Load CompB[i]
+	ADDS R8, R6, R7         	; A[i] + CompB[i] 
+	STR R8, [R3], #4		 	;Store result in DiffAB
 
-	LDR R7, [R10], #4		   ; Load value from compB
-    SUB R8, R6, R7             ; Subtract CompB from A
-    STR R8, [R3], #4           ; Store result in DiffAB
+	MOV R9, #0                 	; Clear R9 for carry
+    ADC R9, R9, #0             	; Add carry flag to R9
+    STR R9, [R4], #4           	; Store carry in CarryAB
 
-    SUBS R5, R5, #1            ; Decrement loop counter
-    BNE add_sub_loop           ; Continue if not zero
+    SUBS R5, R5, #1            	; Decrement loop counter
+    BNE add_sub_loop           	; Continue if not zero
 
-    BX LR                      ; Return from subroutine
+    BX LR                      	; Return from subroutine
 
 ;================= Data Section ===================
 
