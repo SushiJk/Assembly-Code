@@ -81,24 +81,24 @@ next_convert
     BX      LR                  ; Return from subroutine                                     
 	
 add_sub_lists
-    LDR R0, =A                 ; Load address of array A
-	LDR R1, =B				   ; Load address of array B
-    LDR R10, =CompB            ; Load address of complement array B
-    LDR R2, =SumAB             ; Load address to store sums
-    LDR R3, =DiffAB            ; Load address to store differences
-    LDR R4, =CarryAB           ; Load address to store carry info
-    MOV R5, #5                 ; Set loop counter
+    LDR R0, =A                  ; Load address of array A
+	LDR R1, =B				    ; Load address of array B
+    LDR R10, =CompB             ; Load address of complement array B
+    LDR R2, =SumAB              ; Load address to store sums
+    LDR R3, =DiffAB             ; Load address to store differences
+    LDR R4, =CarryAB            ; Load address to store carry info
+    MOV R5, #5                  ; Set loop counter
 
 add_sub_loop
     LDR R6, [R0], #4           	; Load value from A
     LDR R7, [R1], #4           	; Load value from B
 
-    ADDS R8, R6, R7            	; Add with carry update
+	ADDS R8, R6, R7            	; Add with carry update
     STR R8, [R2], #4           	; Store sum in SumAB
 
 	LDR R7, [R10], #4       	; Load CompB[i]
 	ADDS R8, R6, R7         	; A[i] + CompB[i] 
-	STR R8, [R3], #4		 	;Store result in DiffAB
+	STR R8, [R3], #4		 	; Store result in DiffAB
 
 	MOV R9, #0                 	; Clear R9 for carry
     ADC R9, R9, #0             	; Add carry flag to R9
